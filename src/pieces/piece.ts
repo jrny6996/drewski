@@ -6,7 +6,7 @@ class Piece{
         this.x= x
         this.y =y
     }
-    draw(spriteEL:HTMLImageElement, canvas:HTMLCanvasElement, ctx:CanvasRenderingContext2D){
+    draw(spriteEL:HTMLImageElement, canvas:HTMLCanvasElement, ctx:CanvasRenderingContext2D, SomeBreaking:string){
 
     }
     move(){
