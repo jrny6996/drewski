@@ -11,10 +11,10 @@ export class ChessBoard{
     public board:(Piece | null)[][] = [];
     public squareSize:number= 0;
     
-    constructor(canvasWidth:number){
+    constructor(canvasWidth:number, spriteEL:HTMLImageElement){
         this.squareSize = canvasWidth / 8;
         this.b_new();
-        this.b_init();
+        this.b_init(spriteEL);
     }
 
     private b_new(){
@@ -23,30 +23,31 @@ export class ChessBoard{
         }
     }
 
-    private b_init(){
+    private b_init(spriteEL:HTMLImageElement){
+        const sWidth = spriteEL.width / 6;
         //Black init
-        this.board[0][0] = new Rook('black', 0, 0);
-        this.board[0][1] = new Knight('black', 1, 0);
-        this.board[0][2] = new Bishop('black', 2, 0);
-        this.board[0][3] = new Queen('black', 3, 0);
-        this.board[0][4] = new King('black', 4, 0);
-        this.board[0][5] = new Bishop('black', 5, 0);
-        this.board[0][6] = new Knight('black', 6, 0);
-        this.board[0][7] = new Rook('black', 7, 0);
+        this.board[0][0] = new Rook('black', 0, 0, this.squareSize, spriteEL, sWidth);
+        this.board[0][1] = new Knight('black', 1, 0, this.squareSize, spriteEL, sWidth);
+        this.board[0][2] = new Bishop('black', 2, 0, this.squareSize, spriteEL, sWidth);
+        this.board[0][3] = new Queen('black', 3, 0, this.squareSize, spriteEL, sWidth);
+        this.board[0][4] = new King('black', 4, 0, this.squareSize, spriteEL, sWidth);
+        this.board[0][5] = new Bishop('black', 5, 0, this.squareSize, spriteEL, sWidth);
+        this.board[0][6] = new Knight('black', 6, 0, this.squareSize, spriteEL, sWidth);
+        this.board[0][7] = new Rook('black', 7, 0, this.squareSize, spriteEL, sWidth);
         for (let i = 0; i < 8; i++){
-            this.board[1][i] = new Pawn('black', i, 1);
+            this.board[1][i] = new Pawn('black', i, 1, this.squareSize, spriteEL, sWidth);
         }
         //White Init
-        this.board[7][0] = new Rook('white', 0, 7);
-        this.board[7][1] = new Knight('white', 1, 7);
-        this.board[7][2] = new Bishop('white', 2, 7);
-        this.board[7][3] = new Queen('white', 3, 7);
-        this.board[7][4] = new King('white', 4, 7);
-        this.board[7][5] = new Bishop('white', 5, 7);
-        this.board[7][6] = new Knight('white', 6, 7);
-        this.board[7][7] = new Rook('white', 7, 7);
+        this.board[7][0] = new Rook('white', 0, 7, this.squareSize, spriteEL, sWidth);
+        this.board[7][1] = new Knight('white', 1, 7, this.squareSize, spriteEL, sWidth);
+        this.board[7][2] = new Bishop('white', 2, 7, this.squareSize, spriteEL, sWidth);
+        this.board[7][3] = new Queen('white', 3, 7, this.squareSize, spriteEL, sWidth);
+        this.board[7][4] = new King('white', 4, 7, this.squareSize, spriteEL, sWidth);
+        this.board[7][5] = new Bishop('white', 5, 7, this.squareSize, spriteEL, sWidth);
+        this.board[7][6] = new Knight('white', 6, 7, this.squareSize, spriteEL, sWidth);
+        this.board[7][7] = new Rook('white', 7, 7, this.squareSize, spriteEL, sWidth);
         for (let i = 0; i < 8; i++){
-            this.board[6][i] = new Pawn('white', i, 6);
+            this.board[6][i] = new Pawn('white', i, 6, this.squareSize, spriteEL, sWidth);
         }
     }
 

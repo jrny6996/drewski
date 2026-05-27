@@ -9,8 +9,8 @@ export class King extends Queen{
         return 0;
     }
 
-    constructor(color:Color, x:number, y:number){
-        super(color, x, y);
+    constructor(color:Color, i:number, j:number, squareSize:number, spriteEL:HTMLImageElement, sWidth:number){
+        super(color, i, j, squareSize, spriteEL, sWidth);
     }
     
     getPossibleMoves(board:(Piece | null)[][]):Position[] {

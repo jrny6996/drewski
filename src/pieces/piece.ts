@@ -25,10 +25,10 @@ abstract class Piece{
         this.sHeight = spriteEL.height/ 2;
         
         this.pieceSize = squareSize * .95;
-        this.offset = (squareSize - pieceSize) / 2;
+        this.offset = (squareSize - this.pieceSize) / 2;
         
-        this.dx = i *squareSize + offset
-        this.dy = j *squareSize + offset
+        this.dx = i * squareSize + this.offset
+        this.dy = j * squareSize + this.offset
     }
     
     abstract getColumnIndex():number;
@@ -48,10 +48,13 @@ abstract class Piece{
     
 
     draw(spriteEL:HTMLImageElement, ctx:CanvasRenderingContext2D){
-//andrew
         let { sx, sy } = this.getSpriteCoords();
-        
-        
+
+        const black_y_nudge = 70;
+        if (this.color === 'black') {
+            sy += black_y_nudge;
+        }
+
         ctx.drawImage(
             spriteEL,
             sx, sy, this.sWidth, this.sHeight, 

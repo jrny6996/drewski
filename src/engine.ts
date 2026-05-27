@@ -22,7 +22,7 @@ class GameState {
         this.spriteEl.onload = () => {
             this.update();
         }
-        this.board = new Board(this.canvas.width);
+        this.board = new Board(this.canvas.width, this.spriteEl);
     }
 
     update(){
