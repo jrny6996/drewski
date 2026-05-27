@@ -18,20 +18,25 @@ class GameState {
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
         this.spriteEl = new Image()
 
-        this.spriteEl.src =this.spriteMapUrl
+        this.board = new Board(this.canvas.width);
+        this.spriteEl.src = this.spriteMapUrl
         this.spriteEl.onload = () => {
-            this.update();
+            this.board.initPieces(this.spriteEl);
+            this.startRenderLoop();
         }
-        this.board = new Board(this.canvas.width, this.spriteEl);
+    }
+
+    private startRenderLoop(){
+        const loop = () => {
+            this.update();
+            requestAnimationFrame(loop);
+        };
+        requestAnimationFrame(loop);
     }
 
     update(){
-        // console.log(this.spriteEl)
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.board.render(this.spriteEl, this.ctx);
-        this.ctx.fillStyle = "green"
-
-        requestAnimationFrame(() => this.update())
     }
    
                 // this.ctx.drawImage(this.spriteEl, this.x, this.y)

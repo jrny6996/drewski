@@ -11,15 +11,18 @@ export class ChessBoard{
     public board:(Piece | null)[][] = [];
     public squareSize:number= 0;
     
-    constructor(canvasWidth:number, spriteEL:HTMLImageElement){
+    constructor(canvasWidth:number){
         this.squareSize = canvasWidth / 8;
         this.b_new();
+    }
+
+    initPieces(spriteEL:HTMLImageElement){
         this.b_init(spriteEL);
     }
 
     private b_new(){
-        for (let i = 0; i < 8; i++){
-            this.board[i] = new Array(8).fill(null);
+        for (let j = 0; j < 8; j++){
+            this.board[j] = new Array(8).fill(null);
         }
     }
 
@@ -52,31 +55,31 @@ export class ChessBoard{
     }
 
     staticRender(spriteEL:HTMLImageElement, ctx:CanvasRenderingContext2D){
-        for(let row = 0; row < 8; row++){
-            for(let col = 0; col < 8; col++){
-                const piece = this.board[row][col];
+        for(let j = 0; j < 8; j++){
+            for(let i = 0; i < 8; i++){
+                const piece = this.board[j][i];
                 if(piece){
-                    piece.draw(spriteEL, ctx, this.squareSize);
+                    piece.draw(spriteEL, ctx);
                 }
             }
         }
     }
-    movingRender(spriteEL:HTMLImageElement, ctx:CanvasRenderingContext2D,  x:number, y:number){
-        for(let row = 0; row < 8; row++){
-            for(let col = 0; col < 8; col++){
-                const piece = this.board[row][col];
+    movingRender(spriteEL:HTMLImageElement, ctx:CanvasRenderingContext2D,  i:number, j:number){
+        for(let boardJ = 0; boardJ < 8; boardJ++){
+            for(let boardI = 0; boardI < 8; boardI++){
+                const piece = this.board[boardJ][boardI];
                 if(piece){
-                    piece.movingPieceDraw(spriteEL, ctx, this.squareSize, x, y);
+                    piece.movingPieceDraw(spriteEL, ctx, this.squareSize, i, j);
                 }
             }
         }
     }
     render(spriteEL:HTMLImageElement, ctx:CanvasRenderingContext2D){
-        for(let row = 0; row < 8; row++){
-            for(let col = 0; col < 8; col++){
-                const isLightSquare = (row + col) % 2 === 0;
+        for(let j = 0; j < 8; j++){
+            for(let i = 0; i < 8; i++){
+                const isLightSquare = (i + j) % 2 === 0;
                 ctx.fillStyle = isLightSquare ? 'white' : 'green';
-                ctx.fillRect(col * this.squareSize, row * this.squareSize, this.squareSize, this.squareSize);
+                ctx.fillRect(i * this.squareSize, j * this.squareSize, this.squareSize, this.squareSize);
 
             }
         }

@@ -1,5 +1,6 @@
 export type Color = 'white' | 'black';
-export type Position = {x:number, y:number}
+/** i = column (file), j = row (rank) */
+export type Position = {i:number, j:number}
 abstract class Piece{
 
     readonly spriteWidth = 150;
@@ -7,7 +8,9 @@ abstract class Piece{
 
 
    color:Color;
+    /** column (file) */
     i:number;
+    /** row (rank) */
     j:number;
     dx:number;
     dy:number;
@@ -48,6 +51,11 @@ abstract class Piece{
     
 
     draw(spriteEL:HTMLImageElement, ctx:CanvasRenderingContext2D){
+        if (!spriteEL.complete || spriteEL.naturalWidth === 0) return;
+
+        const sWidth = spriteEL.width / 6;
+        const sHeight = spriteEL.height / 2;
+
         let { sx, sy } = this.getSpriteCoords();
 
         const black_y_nudge = 70;
@@ -57,22 +65,26 @@ abstract class Piece{
 
         ctx.drawImage(
             spriteEL,
-            sx, sy, this.sWidth, this.sHeight, 
-            this.dx , 
-            this.dy , 
+            sx, sy, sWidth, sHeight,
+            this.dx,
+            this.dy,
             this.pieceSize, this.pieceSize
         );
 
     }
-    setPosition(x:number, y:number): void{
-        this.i = x;
-       this.j = y;
+    setPosition(i:number, j:number): void{
+        this.i = i;
+        this.j = j;
+    }
+    setDestPosition(i:number, j:number, squareSize:number): void{
+        this.dx = i * squareSize + this.offset;
+        this.dy = j * squareSize + this.offset;
     }
     abstract getPossibleMoves(board:(Piece | null)[][]) : Position[];
 
 
-    protected boundsCheck(x:number, y:number): boolean{
-        return x >= 0 && x < 8 && y >= 0 && y < 8;
+    protected boundsCheck(i:number, j:number): boolean{
+        return i >= 0 && i < 8 && j >= 0 && j < 8;
     }
 }
 export default Piece

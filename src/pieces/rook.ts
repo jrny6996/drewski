@@ -9,8 +9,8 @@ export class Rook extends Piece{
 
     getPossibleMoves(board:(Piece | null)[][]): Position[] {
         const moves:Position[] = []
-        //horizontal moves (x change)
-        for(let i = 0; i < 8; i++){
+        //horizontal moves (i / column change)
+        for(let col = 0; col < 8; col++){
             
                 
         }
