@@ -14,6 +14,7 @@ function Game() {
             alert("Error: Could not initialize HTML canvas")
             return
         }
+        ctx.fillStyle = "blue"
         const engine = new GameState(canvas, ctx)
         // engine.update()
         setGame(engine)
@@ -48,7 +49,6 @@ function Game() {
                     </div>
                 )
             } */}
-            <img src="/chess.png"></img>
         </div>
     )
 }
