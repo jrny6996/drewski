@@ -8,7 +8,7 @@ export class Queen extends Bishop{
         return 1;
     }
     getPieceTypeOffset():number{ //x offset for sprite sheet
-        return 75;
+        return 65;
     }
 
     constructor(color:Color, x:number, y:number){

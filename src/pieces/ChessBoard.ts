@@ -8,8 +8,8 @@ import { Pawn } from "./pawn";
 
 export class ChessBoard{
     
-    private board:(Piece | null)[][] = [];
-    private squareSize:number= 150;
+    public board:(Piece | null)[][] = [];
+    public squareSize:number= 0;
     
     constructor(canvasWidth:number){
         this.squareSize = canvasWidth / 8;
@@ -50,7 +50,7 @@ export class ChessBoard{
         }
     }
 
-    private piecesRender(spriteEL:HTMLImageElement, ctx:CanvasRenderingContext2D){
+    staticRender(spriteEL:HTMLImageElement, ctx:CanvasRenderingContext2D){
         for(let row = 0; row < 8; row++){
             for(let col = 0; col < 8; col++){
                 const piece = this.board[row][col];
@@ -60,9 +60,17 @@ export class ChessBoard{
             }
         }
     }
-
-
-    public render(spriteEL:HTMLImageElement, ctx:CanvasRenderingContext2D){
+    movingRender(spriteEL:HTMLImageElement, ctx:CanvasRenderingContext2D,  x:number, y:number){
+        for(let row = 0; row < 8; row++){
+            for(let col = 0; col < 8; col++){
+                const piece = this.board[row][col];
+                if(piece){
+                    piece.movingPieceDraw(spriteEL, ctx, this.squareSize, x, y);
+                }
+            }
+        }
+    }
+    render(spriteEL:HTMLImageElement, ctx:CanvasRenderingContext2D){
         for(let row = 0; row < 8; row++){
             for(let col = 0; col < 8; col++){
                 const isLightSquare = (row + col) % 2 === 0;
@@ -71,8 +79,10 @@ export class ChessBoard{
 
             }
         }
-        this.piecesRender(spriteEL, ctx);
+        this.staticRender(spriteEL, ctx);
     }
+
+    
 }
 
 export default ChessBoard

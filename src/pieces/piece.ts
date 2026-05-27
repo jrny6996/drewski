@@ -7,12 +7,28 @@ abstract class Piece{
 
 
    color:Color;
-    x:number;
-    y:number;
-    constructor(color:Color, x:number, y:number){
+    i:number;
+    j:number;
+    dx:number;
+    dy:number;
+    sWidth:number;
+    sHeight:number;
+    pieceSize:number;
+    offset:number;
+
+    constructor(color:Color, i:number, j:number, squareSize:number, spriteEL:HTMLImageElement, sWidth:number){
         this.color = color;
-        this.x = x;
-        this.y = y;
+        this.i = i;
+        this.j = j;
+        
+        this.sWidth = sWidth;
+        this.sHeight = spriteEL.height/ 2;
+        
+        this.pieceSize = squareSize * .95;
+        this.offset = (squareSize - pieceSize) / 2;
+        
+        this.dx = i *squareSize + offset
+        this.dy = j *squareSize + offset
     }
     
     abstract getColumnIndex():number;
@@ -26,33 +42,28 @@ abstract class Piece{
         return { sx: colIndex * this.spriteWidth + pieceOffset, sy: rowIndex * this.spriteHeight };
 
     }
+    setSpriteCoords(sx:number, sy:number){
+        this.i = sx
+    }
+    
 
-    draw(spriteEL:HTMLImageElement, ctx:CanvasRenderingContext2D, squareSize:number){
+    draw(spriteEL:HTMLImageElement, ctx:CanvasRenderingContext2D){
 //andrew
         let { sx, sy } = this.getSpriteCoords();
         
-        const black_y_nudge = 70;
         
-        if(this.color === 'black'){
-            sy += black_y_nudge;
-        }
-
-        const sWidth = spriteEL.width / 6;
-        const sHeight = spriteEL.height/ 2;
-        const pieceSize = squareSize * 0.8;
-        const offset = (squareSize - pieceSize) / 2;
         ctx.drawImage(
             spriteEL,
-            sx, sy, sWidth, sHeight, 
-            this.x * squareSize + offset, 
-            this.y * squareSize + offset, 
-            pieceSize, pieceSize
+            sx, sy, this.sWidth, this.sHeight, 
+            this.dx , 
+            this.dy , 
+            this.pieceSize, this.pieceSize
         );
 
     }
     setPosition(x:number, y:number): void{
-        this.x = x;
-        this.y = y;
+        this.i = x;
+       this.j = y;
     }
     abstract getPossibleMoves(board:(Piece | null)[][]) : Position[];
 
