@@ -1,4 +1,6 @@
 import { useEffect } from 'react'
+import {Pawn} from './pieces/pawn';
+
 import { useRef, useState } from 'react'
 import GameState from './engine'
 import Piece from './pieces/piece'
@@ -26,8 +28,9 @@ function Game() {
     
     const files = ('abcdefgh').split('')
 
-    const matrixPosToChessNote = (i:number, j:number) => {
-        return files[i] + (8 - j)
+    // matrix coordinates use { column, row } so they can be converted to readable chess notation.
+    const matrixPosToChessNote = (column:number, row:number) => {
+        return files[column] + (8 - row)
     }
 
     useEffect(() => {
@@ -44,13 +47,13 @@ function Game() {
             const square_width = (canvasRef.current?.width ?? 1) / boardCols;
             const square_height = (canvasRef.current?.height ?? 1) / boardRows;
 
-            let i = Math.floor(canvas_x / square_width);
-            let j = Math.floor(canvas_y / square_height);
+            let column = Math.floor(canvas_x / square_width);
+            let row = Math.floor(canvas_y / square_height);
             
-            i = Math.max(0, Math.min(boardCols - 1, i));
-            j = Math.max(0, Math.min(boardRows - 1, j));
+            column = Math.max(0, Math.min(boardCols - 1, column));
+            row = Math.max(0, Math.min(boardRows - 1, row));
 
-            return [i, j] as const
+            return [column, row] as const
         }
         const canvasEl = canvasRef.current!
 
@@ -61,25 +64,33 @@ function Game() {
             /*console.log("ptrUp", e?.clientX - rect.left
                 , e?.clientY - rect.top
             )*/
-            const [i, j] = pxToMatrixPos(e?.clientX - rect.left, e?.clientY - rect.top, game)
+            const [column, row] = pxToMatrixPos(e?.clientX - rect.left, e?.clientY - rect.top, game)
             
-            console.log(matrixPosToChessNote(i, j))
-            pieceRef.current?.setDestPosition(i, j, game.board.squareSize)
+            console.log(matrixPosToChessNote(column, row))
+            pieceRef.current?.setDestPosition(column, row, game.board.squareSize)
 
            
             
             if(selectedPosRef.current){
-                const [fromI, fromJ] = selectedPosRef.current
+                const [fromColumn, fromRow] = selectedPosRef.current
                 
-                if (fromI != i || fromJ != j){ //piece changes pos
-                    game.board.movePiece(fromI, fromJ, i, j)
+                if (fromColumn != column || fromRow != row){ //piece changes pos
+                    
+                    if(pieceRef.current && !pieceRef.current?.hasMoved){
+                        pieceRef.current.hasMoved = true;
+                    }
+                    
+
+                    game.board.movePiece(fromColumn, fromRow, column, row)
                 }
             }
-
+            if(pieceRef.current) {
+                console.log(pieceRef.current)
+            }
             pieceRef.current = null
             selectedPosRef.current = null
-
             game.update()
+            
             
             canvasEl.removeEventListener("pointermove", handleMove)
         }
@@ -89,8 +100,8 @@ function Game() {
             )*/
             const rect = canvasEl.getBoundingClientRect()
 
-            const [i, j] = pxToMatrixPos(e?.clientX - rect.left, e?.clientY - rect.top, game)
-            pieceRef.current?.setDestPosition(i, j, game.board.squareSize)
+            const [column, row] = pxToMatrixPos(e?.clientX - rect.left, e?.clientY - rect.top, game)
+            pieceRef.current?.setDestPosition(column, row, game.board.squareSize)
         }
         const handleDown = (e: PointerEvent) => {
             /*console.log("ptrDown", e?.clientX - rect.left
@@ -98,10 +109,10 @@ function Game() {
             )*/
             
             const rect = canvasEl.getBoundingClientRect()
-            const [i, j] = pxToMatrixPos(e?.clientX - rect.left, e?.clientY - rect.top, game)
+            const [column, row] = pxToMatrixPos(e?.clientX - rect.left, e?.clientY - rect.top, game)
             
-            pieceRef.current = game.board.board[j][i]
-            selectedPosRef.current = [i, j]
+            pieceRef.current = game.board.board[row][column]
+            selectedPosRef.current = [column, row]
             
             if (pieceRef.current) {
 
@@ -117,7 +128,7 @@ function Game() {
                 console.log( moveNotes )
             }
             
-            console.log(matrixPosToChessNote(i, j))
+            //console.log(matrixPosToChessNote(column, row))
             canvasEl.addEventListener("pointermove", handleMove)
             
         }

@@ -92,25 +92,26 @@ abstract class Piece{
 
     protected generateSlidingMoves(piece:Piece, board:(Piece | null)[][], directions:number[][], maxDistance?:number): Position[]{
         const moves:Position[] = []
+        const row = piece.j;
+        const col = piece.i;
 
-        for (const [dx, dy] of directions){
+        for (const [rowDelta, colDelta] of directions){
+            let nextRow = row + rowDelta;
+            let nextCol = col + colDelta;
             
-            let x = piece.j + dx;
-            let y = piece.i + dy;
-            
-            while (this.boundsCheck(x, y)){
-                const target = board[x][y];
+            while (this.boundsCheck(nextRow, nextCol)){
+                const target = board[nextRow][nextCol];
                 if (target === null){
-                    moves.push({ i:y, j:x });
+                    moves.push({ i: nextCol, j: nextRow });
                 } else {
                     if (target.color !== piece.color){
-                        moves.push({i:y, j:x });
+                        moves.push({ i: nextCol, j: nextRow });
                     }
                     break;
                 }
                 if(maxDistance) break; //for king
-                x += dx;
-                y += dy;
+                nextRow += rowDelta;
+                nextCol += colDelta;
             }
         }
 
@@ -119,30 +120,61 @@ abstract class Piece{
 
     protected generateJumpMoves(piece:Piece, board:(Piece | null)[][], directions:number[][]): Position[]{
         const moves:Position[] = []
+        const row = piece.j;
+        const col = piece.i;
 
-        for (const [dx, dy] of directions){
+        for (const [rowDelta, colDelta] of directions){
+            const nextRow = row + rowDelta;
+            const nextCol = col + colDelta;
             
-            const x = piece.j + dx;
-            const y = piece.i + dy;
-            
-            if (this.boundsCheck(x, y)){
-                const target = board[x][y];
+            if (this.boundsCheck(nextRow, nextCol)){
+                const target = board[nextRow][nextCol];
                 if (target === null || target.color !== piece.color){
-                    moves.push({ i:y, j:x });
+                    moves.push({ i: nextCol, j: nextRow });
                 }
             }
         }
         return moves;
     }
-    protected generatePawnMoves(piece:Piece, board:(Piece | null)[][], forwardDir:number): Position[]{
-        /*if(!board) return [];
-        if(piece.hasMoved){
+    protected generatePawnMoves(piece: Piece, board: (Piece | null)[][], forwardDir: number): Position[] {
 
-        }*/
-       piece.hasMoved = true;
-       console.log(board, forwardDir)
-       
-        return [];
+        const moves: Position[] = [];
+        const row = piece.j;
+        const col = piece.i;
+
+        const nextRow = row + forwardDir;
+
+        if (this.boundsCheck(nextRow, col) && board[nextRow][col] === null) {
+
+            moves.push({ i: col, j: nextRow });
+
+            const doubleRow = row + (2 * forwardDir);
+
+            if (
+                !piece.hasMoved &&
+                this.boundsCheck(doubleRow, col) &&
+                board[doubleRow][col] === null
+            ) {
+                moves.push({ i: col, j: doubleRow });
+            }
+        }
+
+        for (const sideDir of [-1, 1]) {
+
+            const captureRow = row + forwardDir;
+            const captureCol = col + sideDir;
+
+            if (this.boundsCheck(captureRow, captureCol)) {
+
+                const target = board[captureRow][captureCol];
+
+                if (target !== null && target.color !== piece.color) {
+                    moves.push({ i: captureCol, j: captureRow });
+                }
+            }
+        }
+
+        return moves;
     }
 
 }

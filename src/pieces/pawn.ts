@@ -15,10 +15,11 @@ export class Pawn extends Piece{
     }
 
     getPossibleMoves(board:(Piece | null)[][]):Position[] {
-        /*return this.generatePawnMoves(
+        return this.generatePawnMoves(
             this,
             board,
-        )*/
+            this.color === "white" ? -1 : 1
+        )
        console.log(board)
        return [];
     }
