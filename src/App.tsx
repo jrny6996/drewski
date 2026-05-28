@@ -28,6 +28,13 @@ function App() {
       const data = JSON.parse(e.data);
       if(data.type === "lobby_created" || data.lobby_id){
         setLobbyID(data.lobby_id);
+      } else if(data.type === "piece_moved"){
+        // convert string to json and extract 
+        if(e.data.data && typeof e.data.data === "object"){
+          const moveData = JSON.parse(e.data.data);
+          console.log("Move data:", moveData);
+          
+        }
       }
     }catch(err){
       console.error("Could not parse incoming message as JSON", err);
@@ -38,6 +45,7 @@ function App() {
   const requestLobby = () => {
     socketRef.current?.send(JSON.stringify({ lobby_id: "", type: "lobby_request", data: null }));
   };
+  
   
 
 
@@ -67,7 +75,7 @@ function App() {
             Connected to Lobby: <strong>{lobbyID}</strong>
           </div>
           {/* We pass the socket or lobbyId to your Game component as props */}
-          <Game lobbyId={lobbyID} socket={socketRef.current} />
+          <Game  lobbyId={lobbyID} socket={socketRef.current} />
         </div>
       )}
     </div>

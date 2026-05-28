@@ -70,10 +70,14 @@ const Game: React.FC<GameProps> = ({ lobbyId, socket }) => {
         }
         const canvasEl = canvasRef.current!
 
+        const sendMove = (moveData: any) => {
+            socket?.send(JSON.stringify({ lobby_id: lobbyId, type: "piece_move", data: moveData }));
+        };
+
         const handleUp = (e: PointerEvent) => {
             
             const rect = canvasEl.getBoundingClientRect()
-
+            console.log(game.board.board)
             /*console.log("ptrUp", e?.clientX - rect.left
                 , e?.clientY - rect.top
             )*/
@@ -88,17 +92,22 @@ const Game: React.FC<GameProps> = ({ lobbyId, socket }) => {
                 const [fromColumn, fromRow] = selectedPosRef.current
                 
                 if (fromColumn != column || fromRow != row){ //piece changes pos
-                    const movingSquare = game.board.board[fromRow][fromColumn]
                     const destSquare = game.board.board[row][column]
                     
                     if(pieceRef.current && !pieceRef.current?.hasMoved){
                         pieceRef.current.hasMoved = true;
                     }
-                    if(pieceRef.current && destSquare){
+                    if(pieceRef.current){
                         if( destSquare?.color !== pieceRef.current.color){ 
-                            row = fromRow; column = fromColumn 
-                        }
+                            console.log("move", matrixPosToChessNote(fromColumn, fromRow), "to", matrixPosToChessNote(column, row))
+                            console.log(destSquare?.color, pieceRef.current.color)
+                            
+                        } else {console.log("invalid move: cannot capture own piece")}
                         game.board.movePiece(fromColumn, fromRow, column, row);
+                        sendMove({
+                              from_x: fromColumn, from_y: fromRow , to_x: column, to_y: row 
+                        }
+                        )
                     }
                 }
             }

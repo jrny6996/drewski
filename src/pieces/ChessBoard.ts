@@ -91,10 +91,12 @@ export class ChessBoard{
         const piece = this.board[fromJ][fromI];
         if(piece){
             piece.setPosition(toI, toJ);
-            this.board[fromJ][fromI] = null;
-            this.board[toJ][toI] = piece;
             
-        }
+            this.board[toJ][toI] = piece;
+            this.board[fromJ][fromI] = null;
+            
+        }else {
+            console.warn(`No piece at position (${fromI}, ${fromJ}) to move.`); }
     }
 
     
