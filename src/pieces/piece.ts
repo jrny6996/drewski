@@ -12,6 +12,7 @@ abstract class Piece{
     i:number;
     /** row (rank) */
     j:number;
+    hasMoved:boolean;
     dx:number;
     dy:number;
     sWidth:number;
@@ -23,6 +24,7 @@ abstract class Piece{
         this.color = color;
         this.i = i;
         this.j = j;
+        this.hasMoved = false;
         
         this.sWidth = sWidth;
         this.sHeight = spriteEL.height/ 2;
@@ -86,5 +88,51 @@ abstract class Piece{
     protected boundsCheck(i:number, j:number): boolean{
         return i >= 0 && i < 8 && j >= 0 && j < 8;
     }
+
+    protected generateSlidingMoves(piece:Piece, board:(Piece | null)[][], directions:number[][], maxDistance?:number): Position[]{
+        const moves:Position[] = []
+
+        for (const [dx, dy] of directions){
+            
+            let x = piece.j + dx;
+            let y = piece.i + dy;
+            
+            while (this.boundsCheck(x, y)){
+                const target = board[x][y];
+                if (target === null){
+                    moves.push({ i:y, j:x });
+                } else {
+                    if (target.color !== piece.color){
+                        moves.push({i:y, j:x });
+                    }
+                    break;
+                }
+                if(maxDistance) break; //for king
+                x += dx;
+                y += dy;
+            }
+        }
+
+        return moves;
+    }
+
+    protected generateJumpMoves(piece:Piece, board:(Piece | null)[][], directions:number[][]): Position[]{
+        const moves:Position[] = []
+
+        for (const [dx, dy] of directions){
+            
+            const x = piece.j + dx;
+            const y = piece.i + dy;
+            
+            if (this.boundsCheck(x, y)){
+                const target = board[x][y];
+                if (target === null || target.color !== piece.color){
+                    moves.push({ i:y, j:x });
+                }
+            }
+        }
+        return moves;
+    }
+
 }
 export default Piece

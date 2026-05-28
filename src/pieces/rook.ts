@@ -8,14 +8,14 @@ export class Rook extends Piece{
     }
 
     getPossibleMoves(board:(Piece | null)[][]): Position[] {
-        const moves:Position[] = []
-        //horizontal moves (i / column change)
-        for(let col = 0; col < 8; col++){
+        return this.generateSlidingMoves(
+            this,
+            board,
+            [ [1, 0], [-1, 0], [0, 1], [0, -1] ]
             
-                
-        }
-        return moves;
+        )
     }
+    
 
     getColumnIndex():number {
         return 4;

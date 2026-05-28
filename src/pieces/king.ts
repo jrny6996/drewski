@@ -14,8 +14,13 @@ export class King extends Queen{
     }
     
     getPossibleMoves(board:(Piece | null)[][]):Position[] {
-        const moves:Position[] = []
-        return moves;
+        return this.generateSlidingMoves(
+            this,
+            board,
+            [ [1, 1], [-1, -1], [-1, 1], [1, -1], [1, 0], [-1, 0], [0, 1], [0, -1] ],
+            1
+            
+        )
     }
     getPieceTypeOffset():number{ //x offset for sprite sheet
         return 0;

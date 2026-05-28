@@ -15,7 +15,11 @@ export class Bishop extends Piece{
     }
 
     getPossibleMoves(board:(Piece | null)[][]):Position[] {
-        const moves:Position[] = []
-        return moves;
+        return this.generateSlidingMoves(
+            this,
+            board,
+            [ [1, 1], [-1, -1], [-1, 1], [1, -1] ]
+            
+        )
     }
 }

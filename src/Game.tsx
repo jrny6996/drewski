@@ -23,18 +23,15 @@ function Game() {
         setGame(engine)
 
     }, [])
+    
+    const files = ('abcdefgh').split('')
 
+    const matrixPosToChessNote = (i:number, j:number) => {
+        return files[i] + (8 - j)
+    }
 
     useEffect(() => {
-        if (!game || !canvasRef.current) return
-
-        let initialPos = []
-        
-        const files = ('abcdefgh').split('')
-
-        const matrixPosToChessNote = (i:number, j:number) => {
-            return files[i] + (8 - j)
-        }
+        if (!game || !canvasRef.current) return      
         
         const pxToMatrixPos = (px:number, py:number, game: GameState)=>{
             
@@ -65,14 +62,20 @@ function Game() {
                 , e?.clientY - rect.top
             )*/
             const [i, j] = pxToMatrixPos(e?.clientX - rect.left, e?.clientY - rect.top, game)
+            
             console.log(matrixPosToChessNote(i, j))
             pieceRef.current?.setDestPosition(i, j, game.board.squareSize)
+
+           
             
             if(selectedPosRef.current){
                 const [fromI, fromJ] = selectedPosRef.current
-
-                game.board.movePiece(fromI, fromJ, i, j)
+                
+                if (fromI != i || fromJ != j){ //piece changes pos
+                    game.board.movePiece(fromI, fromJ, i, j)
+                }
             }
+
             pieceRef.current = null
             selectedPosRef.current = null
 
@@ -95,11 +98,26 @@ function Game() {
             )*/
             
             const rect = canvasEl.getBoundingClientRect()
-
             const [i, j] = pxToMatrixPos(e?.clientX - rect.left, e?.clientY - rect.top, game)
+            
             pieceRef.current = game.board.board[j][i]
             selectedPosRef.current = [i, j]
-            console.log(pieceRef.current, matrixPosToChessNote(i, j))
+            
+            if (pieceRef.current) {
+
+                const moves = pieceRef.current.getPossibleMoves(game.board.board)
+                console.log(moves)
+                
+                let moveNotes:string[] = []
+                
+                for (const move of moves){
+                    moveNotes.push(matrixPosToChessNote(move.i, move.j))
+
+                }
+                console.log( moveNotes )
+            }
+            
+            console.log(matrixPosToChessNote(i, j))
             canvasEl.addEventListener("pointermove", handleMove)
             
         }

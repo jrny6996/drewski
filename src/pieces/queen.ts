@@ -16,7 +16,12 @@ export class Queen extends Bishop{
     }
 
     getPossibleMoves(board:(Piece | null)[][]):Position[] {
-        const moves:Position[] = []
-        return moves;
+        
+        return this.generateSlidingMoves(
+            this,
+            board,
+            [ [1, 1], [-1, -1], [-1, 1], [1, -1], [1, 0], [-1, 0], [0, 1], [0, -1] ]
+            
+        )
     }
 }

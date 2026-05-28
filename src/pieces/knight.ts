@@ -15,7 +15,13 @@ export class Knight extends Piece{
     }
 
     getPossibleMoves(board:(Piece | null)[][]):Position[] {
-        const moves:Position[] = []
-        return moves;
+        return this.generateJumpMoves(
+            this,
+            board,
+            [ [2, 1], [-2, 1], [-2, -1], [2, -1], [1, 2], [-1, 2], [-1, -2], [1, -2] ]
+            
+        )
     }
+    
+    
 }
