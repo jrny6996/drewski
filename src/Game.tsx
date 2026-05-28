@@ -1,10 +1,16 @@
 import { useEffect } from 'react'
-import {Pawn} from './pieces/pawn';
 
 import { useRef, useState } from 'react'
 import GameState from './engine'
 import Piece from './pieces/piece'
-function Game() {
+
+type GameProps = {
+        lobbyId: string;
+        socket: WebSocket | null;
+    }
+
+const Game: React.FC<GameProps> = ({ lobbyId, socket }) => {
+    
     const canvasRef = useRef<null | HTMLCanvasElement>(null)
     const pieceRef = useRef<null | Piece>(null)
     const selectedPosRef = useRef<null | [number, number]>(null)
@@ -32,6 +38,13 @@ function Game() {
     const matrixPosToChessNote = (column:number, row:number) => {
         return files[column] + (8 - row)
     }
+    useEffect(() => {
+        if (!socket || !game) return
+
+        socket.onmessage = (event) => {
+            console.log('server message', event.data, 'for lobby', lobbyId)
+        }
+    }, [socket, game, lobbyId])
 
     useEffect(() => {
         if (!game || !canvasRef.current) return      
@@ -64,7 +77,7 @@ function Game() {
             /*console.log("ptrUp", e?.clientX - rect.left
                 , e?.clientY - rect.top
             )*/
-            const [column, row] = pxToMatrixPos(e?.clientX - rect.left, e?.clientY - rect.top, game)
+            let [column, row] = pxToMatrixPos(e?.clientX - rect.left, e?.clientY - rect.top, game)
             
             console.log(matrixPosToChessNote(column, row))
             pieceRef.current?.setDestPosition(column, row, game.board.squareSize)
@@ -75,20 +88,26 @@ function Game() {
                 const [fromColumn, fromRow] = selectedPosRef.current
                 
                 if (fromColumn != column || fromRow != row){ //piece changes pos
+                    const movingSquare = game.board.board[fromRow][fromColumn]
+                    const destSquare = game.board.board[row][column]
                     
                     if(pieceRef.current && !pieceRef.current?.hasMoved){
                         pieceRef.current.hasMoved = true;
                     }
-                    
-
-                    game.board.movePiece(fromColumn, fromRow, column, row)
+                    if(pieceRef.current && destSquare){
+                        if( destSquare?.color !== pieceRef.current.color){ 
+                            row = fromRow; column = fromColumn 
+                        }
+                        game.board.movePiece(fromColumn, fromRow, column, row);
+                    }
                 }
             }
             if(pieceRef.current) {
-                console.log(pieceRef.current)
+                //console.log(pieceRef.current)
             }
             pieceRef.current = null
             selectedPosRef.current = null
+            
             game.update()
             
             
@@ -100,8 +119,11 @@ function Game() {
             )*/
             const rect = canvasEl.getBoundingClientRect()
 
-            const [column, row] = pxToMatrixPos(e?.clientX - rect.left, e?.clientY - rect.top, game)
-            pieceRef.current?.setDestPosition(column, row, game.board.squareSize)
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+
+            pieceRef.current?.setMousePosition(mouseX, mouseY);
+            game.update();
         }
         const handleDown = (e: PointerEvent) => {
             /*console.log("ptrDown", e?.clientX - rect.left
@@ -117,7 +139,7 @@ function Game() {
             if (pieceRef.current) {
 
                 const moves = pieceRef.current.getPossibleMoves(game.board.board)
-                console.log(moves)
+                //console.log(moves)
 
                 let moveNotes:string[] = []
                 

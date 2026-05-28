@@ -87,11 +87,13 @@ export class ChessBoard{
     }
 
     movePiece(fromI:number, fromJ:number, toI:number, toJ:number){
+        if (fromI === toI && fromJ === toJ) return; //no move
         const piece = this.board[fromJ][fromI];
         if(piece){
             piece.setPosition(toI, toJ);
-            this.board[toJ][toI] = piece;
             this.board[fromJ][fromI] = null;
+            this.board[toJ][toI] = piece;
+            
         }
     }
 

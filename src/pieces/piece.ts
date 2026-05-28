@@ -15,6 +15,9 @@ abstract class Piece{
     hasMoved:boolean;
     dx:number;
     dy:number;
+    mouseX:number | null = null;
+    mouseY:number | null = null;
+    isDragging:boolean = false;
     sWidth:number;
     sHeight:number;
     pieceSize:number;
@@ -66,11 +69,14 @@ abstract class Piece{
             sy += black_y_nudge;
         }
 
+        const drawX = this.isDragging && this.mouseX !== null ? this.mouseX - this.pieceSize / 2 : this.dx;
+        const drawY = this.isDragging && this.mouseY !== null ? this.mouseY - this.pieceSize / 2 : this.dy;
+
         ctx.drawImage(
             spriteEL,
             sx, sy, sWidth, sHeight,
-            this.dx,
-            this.dy,
+            drawX,
+            drawY,
             this.pieceSize, this.pieceSize
         );
 
@@ -79,7 +85,17 @@ abstract class Piece{
         this.i = i;
         this.j = j;
     }
+    setMousePosition(x:number, y:number): void{
+        this.mouseX = x;
+        this.mouseY = y;
+        this.isDragging = true;
+        this.dx = x - this.pieceSize / 2;
+        this.dy = y - this.pieceSize / 2;
+    }
     setDestPosition(i:number, j:number, squareSize:number): void{
+        this.isDragging = false;
+        this.mouseX = null;
+        this.mouseY = null;
         this.dx = i * squareSize + this.offset;
         this.dy = j * squareSize + this.offset;
     }
@@ -104,10 +120,11 @@ abstract class Piece{
                 if (target === null){
                     moves.push({ i: nextCol, j: nextRow });
                 } else {
-                    if (target.color !== piece.color){
+                    if(target.color !== piece.color){
                         moves.push({ i: nextCol, j: nextRow });
                     }
                     break;
+                   
                 }
                 if(maxDistance) break; //for king
                 nextRow += rowDelta;
