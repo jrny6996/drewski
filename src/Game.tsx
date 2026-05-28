@@ -5,6 +5,7 @@ import Piece from './pieces/piece'
 function Game() {
     const canvasRef = useRef<null | HTMLCanvasElement>(null)
     const pieceRef = useRef<null | Piece>(null)
+    const selectedPosRef = useRef<null | [number, number]>(null)
     const [game, setGame] = useState<null | GameState>(null)
 
 
@@ -56,13 +57,26 @@ function Game() {
         }
         const canvasEl = canvasRef.current!
 
-        const rect = canvasEl.getBoundingClientRect()
         const handleUp = (e: PointerEvent) => {
+            
+            const rect = canvasEl.getBoundingClientRect()
+
             /*console.log("ptrUp", e?.clientX - rect.left
                 , e?.clientY - rect.top
             )*/
             const [i, j] = pxToMatrixPos(e?.clientX - rect.left, e?.clientY - rect.top, game)
             console.log(matrixPosToChessNote(i, j))
+            pieceRef.current?.setDestPosition(i, j, game.board.squareSize)
+            
+            if(selectedPosRef.current){
+                const [fromI, fromJ] = selectedPosRef.current
+
+                game.board.movePiece(fromI, fromJ, i, j)
+            }
+            pieceRef.current = null
+            selectedPosRef.current = null
+
+            game.update()
             
             canvasEl.removeEventListener("pointermove", handleMove)
         }
@@ -70,6 +84,8 @@ function Game() {
             /*console.log("ptrMove", e?.clientX - rect.left
                 , e?.clientY - rect.top
             )*/
+            const rect = canvasEl.getBoundingClientRect()
+
             const [i, j] = pxToMatrixPos(e?.clientX - rect.left, e?.clientY - rect.top, game)
             pieceRef.current?.setDestPosition(i, j, game.board.squareSize)
         }
@@ -77,11 +93,15 @@ function Game() {
             /*console.log("ptrDown", e?.clientX - rect.left
                 , e?.clientY - rect.top
             )*/
+            
+            const rect = canvasEl.getBoundingClientRect()
 
             const [i, j] = pxToMatrixPos(e?.clientX - rect.left, e?.clientY - rect.top, game)
             pieceRef.current = game.board.board[j][i]
-            console.log(pieceRef.current)
+            selectedPosRef.current = [i, j]
+            console.log(pieceRef.current, matrixPosToChessNote(i, j))
             canvasEl.addEventListener("pointermove", handleMove)
+            
         }
         canvasEl.addEventListener("pointerdown", handleDown)
 
@@ -92,6 +112,7 @@ function Game() {
         return (() => {
             canvasEl.removeEventListener("pointerdown", handleDown)
             canvasEl.removeEventListener("pointermove", handleMove)
+            canvasEl.removeEventListener("pointerup", handleUp)
         })
 
 

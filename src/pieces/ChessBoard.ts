@@ -64,12 +64,12 @@ export class ChessBoard{
             }
         }
     }
-    movingRender(spriteEL:HTMLImageElement, ctx:CanvasRenderingContext2D,  i:number, j:number){
+    movingRender(spriteEL:HTMLImageElement, ctx:CanvasRenderingContext2D){
         for(let boardJ = 0; boardJ < 8; boardJ++){
             for(let boardI = 0; boardI < 8; boardI++){
                 const piece = this.board[boardJ][boardI];
                 if(piece){
-                    piece.movingPieceDraw(spriteEL, ctx, this.squareSize, i, j);
+                    piece.draw(spriteEL, ctx);
                 }
             }
         }
@@ -84,6 +84,15 @@ export class ChessBoard{
             }
         }
         this.staticRender(spriteEL, ctx);
+    }
+
+    movePiece(fromI:number, fromJ:number, toI:number, toJ:number){
+        const piece = this.board[fromJ][fromI];
+        if(piece){
+            piece.setPosition(toI, toJ);
+            this.board[toJ][toI] = piece;
+            this.board[fromJ][fromI] = null;
+        }
     }
 
     
