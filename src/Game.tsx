@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useRef, useState } from 'react'
 import GameState from './engine'
 import Piece from './pieces/piece'
@@ -107,7 +107,7 @@ function Game() {
 
                 const moves = pieceRef.current.getPossibleMoves(game.board.board)
                 console.log(moves)
-                
+
                 let moveNotes:string[] = []
                 
                 for (const move of moves){

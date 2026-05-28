@@ -15,7 +15,11 @@ export class Pawn extends Piece{
     }
 
     getPossibleMoves(board:(Piece | null)[][]):Position[] {
-        const moves:Position[] = [];
-        return moves;
+        /*return this.generatePawnMoves(
+            this,
+            board,
+        )*/
+       console.log(board)
+       return [];
     }
 }

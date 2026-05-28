@@ -48,7 +48,8 @@ abstract class Piece{
 
     }
     setSpriteCoords(sx:number, sy:number){
-        this.i = sx
+        this.j = sx
+        this.i = sy
     }
     
 
@@ -132,6 +133,16 @@ abstract class Piece{
             }
         }
         return moves;
+    }
+    protected generatePawnMoves(piece:Piece, board:(Piece | null)[][], forwardDir:number): Position[]{
+        /*if(!board) return [];
+        if(piece.hasMoved){
+
+        }*/
+       piece.hasMoved = true;
+       console.log(board, forwardDir)
+       
+        return [];
     }
 
 }
